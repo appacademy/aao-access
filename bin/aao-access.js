@@ -26,7 +26,7 @@ let opts;
 try {
   opts = parser.parse(process.argv);
 } catch (e) {
-  console.error("index.js: error: %s", e.message);
+  console.error("aao-access: error: %s", e.message);
   process.exit(1);
 }
 
@@ -40,7 +40,7 @@ if (!opts.filename || !opts.taskid) {
 
 function help() {
   const help = parser.help({ includeEnv: true }).trimRight();
-  console.log("usage: node index.js [OPTIONS]\n" + "options:\n" + help);
+  console.log("usage: aao-access [OPTIONS]\n" + "options:\n" + help);
   process.exit(0);
 }
 
