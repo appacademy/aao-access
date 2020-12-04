@@ -15,6 +15,11 @@ const options = [
         help: 'JSON filename containing array of students'
     },
     {
+        names: ['students', 's'],
+        type: 'string',
+        help: 'JSON file containing an array of student objects'
+    },
+    {
         names: ['taskid', 't'],
         type: 'string',
         help: 'Task ID of the week'
@@ -34,7 +39,7 @@ if (opts.help) {
     help();
 }
 
-if (!opts.filename || !opts.taskid) {
+if (!(opts.filename || opts.students) || !opts.taskid) {
   help();
 }
 
@@ -45,14 +50,27 @@ function help() {
 }
 
 (async() =>{
-  try {
-    const students = await readStudentFile(opts.filename);
-    if (!students) {
-      console.log("No emails found");
+  if (opts.filename) {
+    try {
+      const emails = await readStudentFile(opts.filename);
+      if (!emails) {
+        console.log("No emails found");
+      }
+      const students = emails.map(email => ({email: email}))
+      await signup(opts.taskid, students);
+    } 
+    catch (e) {
+      console.error(e);
     }
-    await signup(opts.taskid, students);
-  } 
-  catch (e) {
-    console.error(e);
+  } else if (opts.students) {
+    try {
+      const students = await readStudentFile(opts.students);
+      if (!students) {
+        console.log("No emails found");
+      }
+      await signup(opts.taskid, students);
+    } catch (e) {
+      console.error(e);
+    }
   }
 })();
